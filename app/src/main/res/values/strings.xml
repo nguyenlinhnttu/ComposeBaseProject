@@ -1,0 +1,8 @@
+<resources>
+    <string name="error_server_connect">Failed to connect to the server.</string>
+    <string name="error_parser_data">Internal error</string>
+    <string name="error_common">Currently unable to retrieve results</string>
+    <string name="action_close">Close</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_my_data">MyData</string>
+</resources>

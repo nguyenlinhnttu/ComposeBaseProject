@@ -1,0 +1,54 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Build to distribute"
+  lane :ota do |options|
+
+    if options[:env]
+        env = options[:env]
+      else
+        env = "dev"
+      end
+    if options[:mode]
+            mode = options[:mode]
+          else
+            mode = "Debug"
+          end
+    puts "Env: " + env
+    puts "Mode: " + mode
+    #gradle(task: "clean assembleRelease")
+    gradle(
+      task: "assemble",
+      flavor: env,
+      build_type: mode
+    )
+    puts "Build done2: "
+    file_path = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+
+    puts "Build path: " + file_path
+
+    sh "echo Uploading to ChatWork: " + file_path
+
+    app_upload_response = sh "curl -f -s -u 'username:password' -F 'upfile=@"+file_path+"' https://ota.bravesoft.vn/upload.php  -L"
+    jsonResponse = JSON.parse(app_upload_response)
+    linkOTA = jsonResponse["url"]
+
+    puts "echo linkOTA: " + linkOTA
+
+  end
+end
