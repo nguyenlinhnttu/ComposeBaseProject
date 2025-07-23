@@ -1,13 +1,12 @@
 package com.compose.base.common.di
 
-import android.content.Context
 import com.compose.base.BuildConfig
 import com.compose.base.common.constants.Constants
+import com.compose.base.data.remote.ApiService
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -33,7 +32,6 @@ object NetworkModule {
     fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
         applicationInterceptor: AuthorizationInterceptor,
-        @ApplicationContext context: Context,
     ): OkHttpClient {
         val client = OkHttpClient.Builder()
             .addInterceptor(applicationInterceptor)
@@ -52,10 +50,16 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.HOST_URL)
+            .baseUrl("https://dev-api.domico.jp/api/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiService(retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
     }
 
     // No API service provided here yet, as each feature will provide its own.
