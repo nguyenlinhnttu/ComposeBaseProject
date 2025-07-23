@@ -5,7 +5,6 @@ import com.compose.base.common.base.BaseViewModel
 import com.compose.base.common.helper.LocalDataManager
 import com.compose.base.common.helper.ResourceProvider
 import com.compose.base.data.model.request.LoginRequest
-import com.compose.base.data.model.response.AuthResponseDto
 import com.compose.base.data.remote.ResultWrapper
 import com.compose.base.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,7 +47,7 @@ class LoginViewModel @Inject constructor(
             val request = LoginRequest(_email.value, _password.value)
             authRepository.login(request).collect { result ->
                 when (result) {
-                    is ResultWrapper.Success<AuthResponseDto> -> {
+                    is ResultWrapper.Success -> {
                         _uiState.value = LoginUiState.Success
                         localDataManager.saveAccessToken(result.value.accessToken)
                     }

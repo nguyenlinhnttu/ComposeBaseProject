@@ -38,6 +38,52 @@ fun <T> callApi(
     }
 }.flowOn(Dispatchers.IO)
 
+/**
+* Executes two API calls concurrently and emits a [Flow] of [ResultWrapper] containing a [Pair] of results.
+*
+* This function is useful when you need to fetch two independent API resources at the same time
+* and combine their results once both are completed.
+*
+* ---
+* ## Example Usage:
+*
+* ### 1. Define your API service:
+*
+* interface ApiService {
+ @GET("endpoint1")
+ suspend fun fetchData1(): Response<DataModel1>
+
+ @GET("endpoint2")
+ suspend fun fetchData2(): Response<DataModel2>
+ }
+*
+*
+* ### 2. Use in repository:
+*
+* override fun fetchAllData(): Flow<ResultWrapper<Pair<DataModel1, DataModel2>>> {
+ return callApiZip(
+ apiCall1 = { apiService.fetchData1() },
+ apiCall2 = { apiService.fetchData2() }
+ )
+ }
+*
+*
+* ### 3. Collect in ViewModel:
+ viewModelScope.launch {
+ dataRepository.fetchAllData().collect { result ->
+ when (result) {
+ is ResultWrapper.Success -> {
+ val (data1, data2) = result.value
+ // Handle success
+ }
+ else -> {
+ handleFlowApi(result = result)
+ }
+ }
+ }
+ }
+*
+*/
 fun <T1, T2> callApiZip(
     apiCall1: suspend () -> Response<T1>,
     apiCall2: suspend () -> Response<T2>,
