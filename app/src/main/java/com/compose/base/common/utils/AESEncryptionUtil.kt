@@ -35,6 +35,7 @@ object AESEncryptionUtil {
         return keyGenerator.generateKey()
     }
     fun encrypt(plainText: String): String {
+        if (plainText.isEmpty()) return ""
         val cipher = Cipher.getInstance(TRANSFORMATION)
         val key = getOrCreateKey()
         cipher.init(Cipher.ENCRYPT_MODE, key)
@@ -45,6 +46,7 @@ object AESEncryptionUtil {
     }
 
     fun decrypt(encryptedText: String): String {
+        if (encryptedText.isEmpty()) return ""
         val decoded = Base64.decode(encryptedText, Base64.NO_WRAP)
         val iv = decoded.copyOfRange(0, 12)
         val encrypted = decoded.copyOfRange(12, decoded.size)
