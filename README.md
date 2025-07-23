@@ -1,8 +1,6 @@
-
 # 🚀 MyComposeApp
 
 A modern Android application built with **Jetpack Compose**
-
 
 ---
 
@@ -22,6 +20,7 @@ A modern Android application built with **Jetpack Compose**
 - **Retrofit** — Type-safe HTTP client for API communication
 - **DataStore** — Modern key-value storage replacing SharedPreferences
 - **Kotlin Coroutines** - Simplified async code, Flow for reactive streams, structured concurrency
+
 ---
 
 ## 📂 Project Structure
@@ -50,30 +49,41 @@ com.compose.base/
 Navigation
 ├── AppNavGraph # root navigation
 ├── TabNavGraph # bottom tabs navigation
-````
+```
 
 ---
 
+## :books:Source Documents
 
-## Format Code before commit
+```
+docs
+├── compose-rules/
+├── git-conventions.md
+├── kotlin-style-guide.md
+├── viewmodel-rules.md
+├── local-data-manager-usage.md##
+```
+
+---
+
+## :warning:Format Code before commit
 
 ```
 format:
-	./gradlew ktlintFormat
-````
+    ./gradlew ktlintFormat
+```
+
 ---
 
-
-## Build App via Fastlane
+## :rocket:Build App via Fastlane
 
 ```
 buildDev:
-	fastlane ota env:dev mode:release or debug
-	
+    fastlane ota env:dev mode:release or debug
+
 buildStaging:
-	fastlane ota env:staging mode:release or debug
+    fastlane ota env:staging mode:release or debug
 
 buildProd:
-	fastlane ota env:prod mode:release 
-
-````
+    fastlane ota env:prod mode:release 
+```
