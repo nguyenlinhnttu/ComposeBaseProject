@@ -15,7 +15,9 @@ class LocalDataManager @Inject constructor(private val dataStore: DataStoreClien
 
     suspend fun saveAccessToken(accessToken: String) {
         val encrypted = AESEncryptionUtil.encrypt(accessToken)
-        dataStore.putString(ACCESS_TOKEN, encrypted)
+        encrypted?.let {
+            dataStore.putString(ACCESS_TOKEN, encrypted)
+        }
     }
 
     fun getAccessToken(): Flow<String?> {
