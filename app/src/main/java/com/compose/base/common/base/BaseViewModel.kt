@@ -6,6 +6,7 @@ import com.compose.base.R
 import com.compose.base.common.helper.LocalDataManager
 import com.compose.base.common.helper.ResourceProvider
 import com.compose.base.data.model.response.ErrorResponse
+import com.compose.base.data.remote.ResultWrapper
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,6 +33,22 @@ abstract class BaseViewModel(
 
     private val _error = MutableStateFlow<Any?>(null)
     val error: StateFlow<Any?> get() = _error
+
+    /**
+     * Handles common Flow API result states such as loading, error, and failure.
+     * Makes API result handling reusable across ViewModel methods.
+     *
+     * @param isShowLoading Whether to show or hide the loading indicator.
+     * @param result The ResultWrapper from the API response.
+     */
+    fun handleFlowApi(isShowLoading: Boolean = true, result: ResultWrapper<*>) {
+        when (result) {
+            is ResultWrapper.Loading -> if (isShowLoading) setLoading(result.isLoading)
+            is ResultWrapper.Error -> displayApiError(result.error)
+            is ResultWrapper.Failure -> displayApiFailure(result.throwable)
+            is ResultWrapper.Success<*> -> {} // Success is handled separately
+        }
+    }
 
     fun setLoading(isLoading: Boolean) {
         _isLoading.value = isLoading

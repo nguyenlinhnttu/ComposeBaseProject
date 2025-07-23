@@ -30,15 +30,17 @@ class LoginViewModel @Inject constructor(
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            val result = authRepository.login(LoginRequest(email, password))
-            when (result) {
-                is ResultWrapper.Loading -> _uiState.value = LoginUiState.Loading
-                is ResultWrapper.Success -> {
-                    localDataManager.saveAccessToken(result.value.accessToken)
-                    _event.emit(LoginEvent.NavigateToHome)
+            val request = LoginRequest(_email.value, _password.value)
+            authRepository.login(request).collect { result ->
+                when (result) {
+                    is ResultWrapper.Success<AuthResponseDto> -> {
+                        _uiState.value = LoginUiState.Success
+                        localDataManager.saveAccessToken(result.value.accessToken)
+                    }
+                    else -> {
+                        handleFlowApi(result = result)
+                    }
                 }
-                is ResultWrapper.Error -> _event.emit(LoginEvent.ShowError(result.error))
-                is ResultWrapper.Failure -> _event.emit(LoginEvent.ShowThrowable(result.throwable))
             }
         }
     }
